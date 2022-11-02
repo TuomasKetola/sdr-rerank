@@ -2,6 +2,8 @@
 Repo for various reranking algorithms. The underlying data is assumed to be structured, but atomic models can easily be used as well.
 
 ## Running rerankers and evalution
+run make for basic instructions
+
 ```make process index_name={index_name} model_name={model_name}```
 and
 ```make evaluation index_name={index_name} model_name={model_name}```
