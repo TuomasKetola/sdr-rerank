@@ -5,7 +5,8 @@ def rankerFunction(fields, query_data, datasetInfo):
     # calculate lambda
     arr_data = query_data['numpy_data']
     field_scores = arr_data['bm25_scores_arr']
-    doc_ids = arr_data['elastic_ids']
+
+    doc_ids = arr_data['doc_ids']
     df_arr = arr_data['df_arr']
     idf_arr = arr_data['idf_arr']
     empty_fields = datasetInfo['empty_fields']
@@ -16,7 +17,7 @@ def rankerFunction(fields, query_data, datasetInfo):
 
     nr_terms = df_arr.shape[1]
     if nr_terms == 1:
-        shape = (nr_fields.shape[0],1 )
+        shape = (nr_fields,1 )
         lambda_= np.zeros(shape)
         return lambda_, None
     max_dfs = df_arr.mean(axis=1).max()
@@ -42,7 +43,6 @@ def rankerFunction(fields, query_data, datasetInfo):
     
     aggregated_scores = weighted_arr.sum(axis=1)
     
-    doc_ids = arr_data['elastic_ids']
     doc_score_lst = list(zip(doc_ids,aggregated_scores.tolist()))
 
     doc_score_lst = sorted(doc_score_lst, key=lambda x: x[1], reverse=True)
@@ -51,9 +51,10 @@ def rankerFunction(fields, query_data, datasetInfo):
 
 def rerank(query_data, datasetInfo):
 
+    q_id = query_data['query_id'].strip()
     fields = datasetInfo['fields']
     doc_score_lst, weights = rankerFunction(fields, query_data, datasetInfo)
     doc_score_lst = sorted(doc_score_lst, key=lambda x: x[1], reverse=True)
-    return doc_score_lst, weights
+    return q_id, doc_score_lst
 
 

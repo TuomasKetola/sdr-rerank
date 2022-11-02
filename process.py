@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
 import csv
 import json
 import pickle
 import numpy as np
-from rankers import static
+from rankers import static, icfwLA, BM25Elastic
 
 
 def open_json(path):
@@ -19,7 +20,9 @@ def open_pickle(path):
 
 def rerank_query(query_data, datasetInfo,model):
     q_id, doc_score_lst = model.rerank(query_data,datasetInfo) 
-    save_str = os.path.join('results', index_name, q_id+'.csv')
+    save_dir = os.path.join('results', index_name, model_name)
+    Path(save_dir).mkdir(parents=True, exist_ok=True)
+    save_str = os.path.join(save_dir, q_id+'.csv')
     with open(save_str, 'w') as out:
         writer = csv.writer(out)
         writer.writerows(doc_score_lst)
@@ -28,7 +31,10 @@ def rerank_query(query_data, datasetInfo,model):
 
 def rerank_query_set(data, datasetInfo, model_name):
     models = {
-            'static': static}
+            'static': static,
+            'icfwLA': icfwLA,
+            'BM25Elastic': BM25Elastic,
+            }
     model = models[model_name]
     for query_data in data:
         rerank_query(query_data, datasetInfo, model)
@@ -44,6 +50,7 @@ if __name__ == '__main__':
 
     parser.add_argument("-index_name", help="name of the index e.g. dabpedia", required=True)
     parser.add_argument("-model_name", help="which ranker model to use?", default="static")
+    parser.add_argument('-options', type=str, help='set of options in json format: {"k_1":1, b:...}', default="{}")
 
     args = parser.parse_args()
 

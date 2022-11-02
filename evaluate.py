@@ -77,7 +77,7 @@ def evaluate(index_name, model_name):
         qrel[2] = qrel[2].lower()
         qrel_dict[qrel[0].strip()].append(qrel)
 
-    results_dir = os.path.join('results', index_name)
+    results_dir = os.path.join('results', index_name, model_name)
     for query_file_name in os.listdir(results_dir):
         query_file_path = os.path.join(results_dir, query_file_name)
         results_file =  open_csv(query_file_path)
