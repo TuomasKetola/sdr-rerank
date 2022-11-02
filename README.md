@@ -1,6 +1,16 @@
 # sdr-rerank
 Repo for various reranking algorithms. The underlying data is assumed to be structured, but atomic models can easily be used as well.
 
+## Running rerankers and evalution
+```make process index_name={index_name} model_name={model_name}```
+and
+```make evaluation index_name={index_name} model_name={model_name}```
+
+Alternatively start a virtualenviroment using: ```source bin/activate``` and run
+```python process.py -index_name {index_name} -model_name {model_name}```
+and
+```python evaluate.py -index_name {index_name} -model_name {model_name}```
+
 ## Adding new rerankers:
 
 There are 3 steps that need to be taken to process data with a new model and to evaluate the results
